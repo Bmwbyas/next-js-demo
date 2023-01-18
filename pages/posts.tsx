@@ -2,7 +2,8 @@ import Head from "next/head";
 import Link from "next/link";
 import MainLayout from "@/components/MainLayout";
 import {useEffect, useState} from "react";
-import {InferGetStaticPropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType, NextPage, NextPageContext} from "next";
+import {Context} from "vm";
 
 export type PostType = {
     id: number
@@ -18,25 +19,29 @@ type ResType = {
     profile: { name: string }
 
 }
-
-const Posts = ({post}: InferGetStaticPropsType<typeof getStaticProps>) => {
+interface Props {
+    post:  PostType[]
+}
+const Posts:NextPage<Props> = ({post}) => {
     console.log('posts')
-    const [posts, setPosts] = useState<PostType[]>([])
-    useEffect(() => {
-        setPosts(post)
-    }, [])
 
+    const [posts, setPosts] = useState<PostType[]|null>(post)
 
-    // useEffect(() => {
-    //     const load = async (): Promise<any> => {
-    //         const res = await fetch('http://localhost:4200/posts')
-    //         const json:PostType[] = await res.json()
-    //
-    //         setPosts(json)
-    //     }
-    //     load()
-    // }, [])
+    useEffect(()=>{
+        const load = async (): Promise<any> => {
+            const res = await fetch(`http://localhost:4200/posts`)
+            const data:PostType[] = await res.json()
+            setPosts(data)
+        }
+        if(!posts)
+        {load()}
+    },[])
 
+    if(!posts){
+        return <MainLayout title={'ff'}>
+            <div>loading</div>
+        </MainLayout>
+    }
     return <MainLayout title={'posts'}>
         <Head>
             <title> posts</title>
@@ -51,15 +56,22 @@ const Posts = ({post}: InferGetStaticPropsType<typeof getStaticProps>) => {
     </MainLayout>
 }
 
+interface PostNextPageContex extends NextPageContext{
+    query:{
+        postId:string
+    }
+}
 
-export async function getStaticProps() {
-
-    const res = await fetch('http://localhost:4200/posts')
+export const getInitialProps =async ({req,query}: PostNextPageContex)=> {
+    if(!req){
+        return  {post:null}
+    }
+    const res = await fetch(`${process.env.API_URL}/posts`)
     const post: PostType[] = await res.json()
 
     console.log(post)
 
-    return {props: {post}}
+    return {post}
 }
 
 
