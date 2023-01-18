@@ -1,0 +1,11 @@
+{
+  "posts": [
+    { "id": 1, "title": "json-server", "author": "typicodedf fdsf dsf  df sdfs sdf" },
+    { "id": 2, "title": "jssdfsfsdfsdn-sfsdfsdfsderver", "author": "typicodef sdfs sdf sd sdfs d" },
+    { "id": 3, "title": "jssdfsffdon-servesdfsffdfr", "author": "typisdf sdfcodedsf sdf" }
+  ],
+  "comments": [
+    { "id": 1, "body": "some comment", "postId": 1 }
+  ],
+  "profile": { "name": "typicode" }
+}

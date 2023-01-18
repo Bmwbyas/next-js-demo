@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "mock": "json-server --watch db.json -p 4200 -d 450"
   },
   "dependencies": {
     "@next/font": "13.1.2",
